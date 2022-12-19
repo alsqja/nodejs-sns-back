@@ -15,11 +15,11 @@ module.exports = (sequelize, DataTypes) => {
     {
       post_id: {
         allowNull: true,
-        type: DataTypes.INERGER,
+        type: DataTypes.INTEGER,
       },
       user_id: {
         allowNull: false,
-        type: DataTypes.INERGER,
+        type: DataTypes.INTEGER,
       },
       urls: {
         allowNull: false,

@@ -4,6 +4,7 @@ const morgan = require("morgan");
 const path = require("path");
 const session = require("express-session");
 const dotenv = require("dotenv");
+const indexRouter = require("./routes");
 
 dotenv.config();
 
@@ -26,9 +27,16 @@ app.use(
   })
 );
 
+app.get("/", (req, res) => {
+  res.send("hello world");
+});
+
+app.use("/", indexRouter);
+
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
   error.status = 404;
+  console.log(error);
   next(error);
 });
 
@@ -36,7 +44,7 @@ app.use((err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = process.env.NODE_ENV !== "production" ? err : {};
   res.status(err.status || 500);
-  res.send("error");
+  res.send(err.message);
 });
 
 app.listen(app.get("port"), () => {
