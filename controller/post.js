@@ -17,7 +17,7 @@ module.exports = {
         .status(201)
         .send({ data: newPosts, message: "게시글이 등록되었습니다." });
     } catch (err) {
-      console.error(`post/post error : ${err}`);
+      console.error(`new post error : ${err}`);
       return next(err);
     }
   },
