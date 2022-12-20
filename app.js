@@ -4,16 +4,22 @@ const morgan = require("morgan");
 const path = require("path");
 const session = require("express-session");
 const dotenv = require("dotenv");
+const cors = require("cors");
+const passport = require("passport");
+
 const indexRouter = require("./routes");
+const passportConfig = require("./passport");
 
 dotenv.config();
 
 const app = express();
+passportConfig();
 app.set("port", process.env.PORT || 8080);
 
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors());
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(
   session({
@@ -26,6 +32,8 @@ app.use(
     },
   })
 );
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get("/", (req, res) => {
   res.send("hello world");
@@ -43,6 +51,7 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = process.env.NODE_ENV !== "production" ? err : {};
+  console.error(err);
   res.status(err.status || 500);
   res.send(err.message);
 });
