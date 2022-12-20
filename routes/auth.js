@@ -1,13 +1,12 @@
 const express = require("express");
 const controller = require("../controller");
-const { isLoggedIn, isNotLoggedIn, verifyToken } = require("./middlewares");
-// delete
-const { users } = require("../models");
+const { verifyToken } = require("./middlewares");
 
 const router = express.Router();
 
-router.post("/signup", isNotLoggedIn, controller.auth.signup.post);
-router.post("/login", isNotLoggedIn, controller.auth.login.post);
+router.post("/signup", controller.auth.signup.post);
+router.post("/login", controller.auth.login.post);
 router.get("/logout", verifyToken, controller.auth.logout.get);
+router.get("/refresh");
 
 module.exports = router;

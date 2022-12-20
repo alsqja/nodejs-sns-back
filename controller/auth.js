@@ -15,7 +15,7 @@ module.exports = {
       try {
         const exUser = await users.findOne({ where: { name } });
         if (exUser) {
-          return res.status(400).send("이미 존재하는 이름입니다.");
+          return res.status(409).send("이미 존재하는 이름입니다.");
         }
         const hash = await bcrypt.hash(password, 12);
         const newUser = await users.create({
