@@ -1,5 +1,6 @@
 const { users } = require("../models");
 const { isAuthorized } = require("../utils/tokenFunctions");
+const bcrypt = require("bcrypt");
 
 module.exports = {
   getMe: async (req, res, next) => {
@@ -23,9 +24,10 @@ module.exports = {
     const { newPassword, profile } = req.body;
     try {
       if (newPassword && profile) {
+        const hash = await bcrypt.hash(newPassword, 12);
         await users.update(
           {
-            password: newPassword,
+            password: hash,
             profile: profile,
           },
           {
@@ -48,6 +50,7 @@ module.exports = {
           .status(200)
           .json({ message: "회원정보 수정이 완료되었습니다." });
       } else if (!profile && newPassword) {
+        const hash = await bcrypt.hash(newPassword, 12);
         await users.update(
           {
             password: newPassword,
