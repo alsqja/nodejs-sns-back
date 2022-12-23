@@ -70,4 +70,16 @@ module.exports = {
       return next(err);
     }
   },
+  delete: async (req, res, next) => {
+    const accessTokenData = isAuthorized(req);
+    const { id } = accessTokenData;
+
+    try {
+      await users.destroy({ where: { id } });
+      return res.status(204).send({ message: "완료" });
+    } catch (e) {
+      console.error(e);
+      return next(e);
+    }
+  },
 };

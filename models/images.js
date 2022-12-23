@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      models.images.belongsTo(models.users, {
+        foreignKey: "user_id",
+        onDelete: "CASCADE",
+      });
     }
   }
   images.init(

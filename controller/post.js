@@ -1,4 +1,4 @@
-const { posts, images } = require("../models");
+const { posts, images, comments, likes } = require("../models");
 const { isAuthorized } = require("../utils/tokenFunctions");
 
 module.exports = {
@@ -39,19 +39,11 @@ module.exports = {
     try {
       const exPost = await posts.findOne({
         where: { id },
-        attributes: ["user_id"],
       });
       if (exPost.user_id !== user_id) {
         return res
           .status(401)
           .send({ message: "게시글은 본인만 삭제할 수 있습니다." });
-      }
-      const postImages = await images.findAll({
-        where: { post_id: id },
-        attributes: ["id"],
-      });
-      for (let i = 0; i < postImages.length; i++) {
-        await images.destroy({ where: { id: postImages[i].id } });
       }
       await posts.destroy({
         where: { id },

@@ -9,6 +9,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      models.follow.belongsTo(models.users, {
+        foreignKey: "user_id",
+        onDelete: "CASCADE",
+      });
+      models.follow.belongsTo(models.users, {
+        foreignKey: "following_id",
+        onDelete: "CASCADE",
+      });
     }
   }
   follow.init(

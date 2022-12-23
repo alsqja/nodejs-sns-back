@@ -6,5 +6,6 @@ const router = express.Router();
 
 router.get("/me", verifyToken, controller.user.getMe);
 router.put("/me", verifyToken, controller.user.put);
+router.delete("/me", verifyToken, controller.user.delete);
 
 module.exports = router;
