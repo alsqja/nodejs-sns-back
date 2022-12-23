@@ -12,6 +12,7 @@ module.exports = {
       user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        onDelete: "CASCADE",
         references: {
           model: "users",
           key: "id",
@@ -20,6 +21,7 @@ module.exports = {
       post_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        onDelete: "CASCADE",
         references: {
           model: "posts",
           key: "id",
@@ -28,6 +30,7 @@ module.exports = {
       comment_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
+        onDelete: "CASCADE",
         references: {
           model: "comments",
           key: "id",

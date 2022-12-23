@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
         through: "post_hashtag",
         foreignKey: "post_id",
       });
+      models.posts.belongsTo(models.users, {
+        foreignKey: "user_id",
+        onDelete: "CASCADE",
+      });
     }
   }
   posts.init(

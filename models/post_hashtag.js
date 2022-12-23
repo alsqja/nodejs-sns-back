@@ -11,9 +11,11 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       models.post_hashtag.belongsTo(models.posts, {
         foreignKey: "post_id",
+        onDelete: "CASCADE",
       });
       models.post_hashtag.belongsTo(models.hashtags, {
         foreignKey: "hashtag_id",
+        onDelete: "CASCADE",
       });
     }
   }
