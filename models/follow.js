@@ -33,7 +33,9 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "follow",
+      timestamps: false,
     }
   );
+  follow.removeAttribute("id");
   return follow;
 };
