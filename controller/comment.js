@@ -26,4 +26,23 @@ module.exports = {
       return next(err);
     }
   },
+  delete: async (req, res, next) => {
+    const id = req.params.comment_id;
+    const user_id = isAuthorized(req).id;
+
+    try {
+      const exComments = await comments.findOne({
+        where: { id },
+        attributes: ["user_id"],
+      });
+      if (exComments.user_id !== user_id) {
+        return res.status(403).send({ message: "삭제는 본인만 가능합니다." });
+      }
+      await comments.destroy({ where: { id } });
+      return res.status(204).send("no contents");
+    } catch (err) {
+      console.error(err);
+      return next(err);
+    }
+  },
 };
