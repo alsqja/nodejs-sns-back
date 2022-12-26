@@ -17,7 +17,7 @@ module.exports = {
           .status(201)
           .send({ data: newFollowing, message: "팔로우 성공" });
       } else {
-        await follows.destroy({
+        await follow.destroy({
           where: { user_id: id, following_id },
         });
         return res.status(204).send({ message: "팔로우 취소 성공" });
