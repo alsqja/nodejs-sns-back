@@ -8,4 +8,5 @@ module.exports = {
   post: postController,
   user: userController,
   follow: followController,
+  comment: require("./comment"),
 };
