@@ -181,5 +181,36 @@ module.exports = {
       }
     }
   },
-  detail: async (req, res, next) => {},
+  detail: async (req, res, next) => {
+    const { id } = req.params;
+    try {
+      const exPost = await posts.findOne({
+        where: { id },
+        include: [
+          { model: images, attributes: ["url"] },
+          { model: users, attributes: ["id", "name", "profile"] },
+          {
+            model: comments,
+            attributes: ["id", "content"],
+            include: [
+              { model: users, attributes: ["id", "name", "profile"] },
+              {
+                model: likes,
+                attributes: ["id", "post_id", "comment_id", "user_id"],
+              },
+            ],
+          },
+          {
+            model: likes,
+            where: { comment_id: null },
+            required: false,
+          },
+        ],
+      });
+      return res.send(exPost);
+    } catch (err) {
+      console.error(err);
+      return next(err);
+    }
+  },
 };
