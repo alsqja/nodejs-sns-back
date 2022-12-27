@@ -44,6 +44,5 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: false,
     }
   );
-  likes.removeAttribute("id");
   return likes;
 };
