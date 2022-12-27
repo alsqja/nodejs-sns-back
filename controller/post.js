@@ -1,4 +1,5 @@
-const { posts, images, comments, likes } = require("../models");
+const { Op } = require("sequelize");
+const { posts, images, users, comments, likes, follow } = require("../models");
 const { isAuthorized } = require("../utils/tokenFunctions");
 
 module.exports = {
@@ -88,6 +89,86 @@ module.exports = {
     } catch (err) {
       console.error(err);
       return next(err);
+    }
+  },
+  get: async (req, res, next) => {
+    const { limit, page } = req.query;
+
+    if (!req.headers.authorization) {
+      const exPosts = await posts.findAndCountAll({
+        limit: Number(limit),
+        offset: (Number(page) - 1) * limit,
+        distinct: true,
+        order: [
+          ["views", "DESC"],
+          ["createdAt", "DESC"],
+        ],
+        include: [
+          { model: images, attributes: ["url"] },
+          { model: users, attributes: ["id", "name", "profile"] },
+          {
+            model: likes,
+            where: { comment_id: null },
+            required: false,
+          },
+          {
+            model: comments,
+            attributes: ["id", "content"],
+            include: [
+              { model: users, attributes: ["id", "name", "profile"] },
+              {
+                model: likes,
+                attributes: ["id", "post_id", "comment_id", "user_id"],
+              },
+            ],
+          },
+        ],
+      });
+      return res.status(200).send({ ...exPosts, page: Number(page) });
+    } else {
+      const accessTokenData = isAuthorized(req);
+      const { id } = accessTokenData;
+      let followers = await follow.findAll({
+        where: { user_id: id },
+        raw: true,
+      });
+      followers = followers.map((el) => el.following_id);
+
+      const followerPosts = await posts.findAndCountAll({
+        where: {
+          user_id: {
+            [Op.or]: followers,
+          },
+        },
+        limit: Number(limit),
+        offset: (Number(page) - 1) * limit,
+        distinct: true,
+        order: [
+          ["views", "DESC"],
+          ["createdAt", "DESC"],
+        ],
+        include: [
+          { model: images, attributes: ["url"] },
+          { model: users, attributes: ["id", "name", "profile"] },
+          {
+            model: likes,
+            where: { comment_id: null },
+            required: false,
+          },
+          {
+            model: comments,
+            attributes: ["id", "content"],
+            include: [
+              { model: users, attributes: ["id", "name", "profile"] },
+              {
+                model: likes,
+                attributes: ["id", "post_id", "comment_id", "user_id"],
+              },
+            ],
+          },
+        ],
+      });
+      return res.send({ ...followerPosts, page: Number(page) });
     }
   },
 };
