@@ -58,7 +58,6 @@ module.exports = {
         });
         imgUrls.push(newImg.url);
       }
-      console.log(updated);
       return res.status(201).send({
         data: { id: post_id },
         message: "게시글이 수정되었습니다.",

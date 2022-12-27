@@ -26,6 +26,42 @@ module.exports = {
       return next(err);
     }
   },
+  put: async (req, res, next) => {
+    const { content } = req.body;
+    const accessTokenData = isAuthorized(req);
+    const { id } = accessTokenData;
+    const { post_id, comment_id } = req.params;
+
+    try {
+      const exComments = await comments.findOne({
+        where: { post_id, id: comment_id },
+      });
+      if (!exComments) {
+        return res.status(404).send({ message: "존재하지 않는 댓글입니다." });
+      }
+      if (exComments.user_id !== id) {
+        return res
+          .status(401)
+          .send({ message: "댓글 작성자만 수정이 가능합니다." });
+      }
+
+      await comments.update(
+        {
+          content,
+        },
+        {
+          where: { id: comment_id },
+        }
+      );
+
+      return res
+        .status(201)
+        .send({ id: Number(comment_id), message: "댓글이 수정되었습니다." });
+    } catch (err) {
+      console.error(err);
+      return next(err);
+    }
+  },
   delete: async (req, res, next) => {
     const id = req.params.comment_id;
     const user_id = isAuthorized(req).id;
