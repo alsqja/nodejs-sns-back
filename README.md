@@ -22,4 +22,4 @@ https://lilac-vest-58c.notion.site/Node_SNS_API-0cc4c8b1f5414b759f9b1dd5461b5bac
 
 ## DB schema
 
-![image](https://node-sns-imgs.s3.ap-northeast-2.amazonaws.com/1/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA%202022-12-19%20%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE%203.09.47.png/0)
+![image](https://node-sns-imgs.s3.ap-northeast-2.amazonaws.com/1/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA%202022-12-19%20%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE%203.09.47.png)
