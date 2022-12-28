@@ -71,6 +71,7 @@ module.exports = {
         user: exUser,
         posts: userPosts.rows,
         counts: userPosts.count,
+        page: Number(page),
       });
       // return res.send(userPosts);
     } catch (err) {
