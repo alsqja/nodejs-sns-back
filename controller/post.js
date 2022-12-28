@@ -206,6 +206,7 @@ module.exports = {
           },
         ],
       });
+      await posts.update({ views: exPost.views + 1 }, { where: { id } });
       return res.send(exPost);
     } catch (err) {
       console.error(err);
