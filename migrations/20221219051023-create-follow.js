@@ -3,6 +3,12 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("follows", {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER,
+      },
       user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -20,6 +26,16 @@ module.exports = {
           model: "users",
           key: "id",
         },
+      },
+      createdAt: {
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
+        type: Sequelize.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
+        type: Sequelize.DATE,
       },
     });
   },
