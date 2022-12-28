@@ -29,6 +29,16 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "cascade",
         hooks: true,
       });
+      models.users.belongsToMany(models.users, {
+        through: "follows",
+        foreignKey: "user_id",
+        as: "followers",
+      });
+      models.users.belongsToMany(models.users, {
+        through: "follows",
+        foreignKey: "following_id",
+        as: "followings",
+      });
     }
   }
   users.init(
