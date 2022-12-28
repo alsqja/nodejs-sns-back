@@ -23,3 +23,4 @@ https://lilac-vest-58c.notion.site/Node_SNS_API-0cc4c8b1f5414b759f9b1dd5461b5bac
 ## DB schema
 
 ![스크린샷 2022-12-19 오후 3 09 47](https://user-images.githubusercontent.com/91926455/209764550-8df84af2-a4ac-4954-ae1d-ca47a5aa72cb.png)
+![Untitled](https://user-images.githubusercontent.com/91926455/209769954-223a7a68-64b4-4464-b270-63747aa527c6.png)
