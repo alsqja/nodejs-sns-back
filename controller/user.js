@@ -1,6 +1,7 @@
 const { users, posts, images, comments, likes } = require("../models");
 const { isAuthorized } = require("../utils/tokenFunctions");
 const bcrypt = require("bcrypt");
+const { Op } = require("sequelize");
 
 module.exports = {
   get: async (req, res, next) => {
@@ -157,5 +158,23 @@ module.exports = {
       console.error(e);
       return next(e);
     }
+  },
+  search: async (req, res, next) => {
+    const { query, limit, page } = req.query;
+
+    const searchUsers = await users.findAndCountAll({
+      where: {
+        name: {
+          [Op.like]: "%" + query + "%",
+        },
+      },
+      attributes: {
+        exclude: ["password"],
+      },
+      limit: Number(limit),
+      offset: (Number(page) - 1) * Number(limit),
+    });
+
+    return res.send(searchUsers);
   },
 };
