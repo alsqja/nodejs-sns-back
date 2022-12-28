@@ -5,6 +5,7 @@ const { verifyToken } = require("./middlewares");
 const router = express.Router();
 
 router.get("/", controller.post.get);
+router.get("/search", controller.post.search);
 router.get("/:id", controller.post.detail);
 router.post("/", verifyToken, controller.post.post);
 router.put("/:id", verifyToken, controller.post.put);

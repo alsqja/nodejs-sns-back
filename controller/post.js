@@ -213,4 +213,46 @@ module.exports = {
       return next(err);
     }
   },
+  search: async (req, res, next) => {
+    const { query, limit, page } = req.query;
+
+    try {
+      const searchPosts = await posts.findAndCountAll({
+        where: {
+          contents: {
+            [Op.like]: "%" + query + "%",
+          },
+        },
+        distinct: true,
+        limit: Number(limit),
+        offset: (Number(page) - 1) * Number(limit),
+        order: [["views", "DESC"]],
+        include: [
+          { model: images, attributes: ["url"] },
+          { model: users, attributes: ["id", "name", "profile"] },
+          {
+            model: comments,
+            attributes: ["id", "content"],
+            include: [
+              { model: users, attributes: ["id", "name", "profile"] },
+              {
+                model: likes,
+                attributes: ["id", "post_id", "comment_id", "user_id"],
+              },
+            ],
+          },
+          {
+            model: likes,
+            where: { comment_id: null },
+            required: false,
+          },
+        ],
+      });
+
+      return res.send(searchPosts);
+    } catch (err) {
+      console.error(err);
+      return next(err);
+    }
+  },
 };

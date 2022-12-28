@@ -162,19 +162,24 @@ module.exports = {
   search: async (req, res, next) => {
     const { query, limit, page } = req.query;
 
-    const searchUsers = await users.findAndCountAll({
-      where: {
-        name: {
-          [Op.like]: "%" + query + "%",
+    try {
+      const searchUsers = await users.findAndCountAll({
+        where: {
+          name: {
+            [Op.like]: "%" + query + "%",
+          },
         },
-      },
-      attributes: {
-        exclude: ["password"],
-      },
-      limit: Number(limit),
-      offset: (Number(page) - 1) * Number(limit),
-    });
+        attributes: {
+          exclude: ["password"],
+        },
+        limit: Number(limit),
+        offset: (Number(page) - 1) * Number(limit),
+      });
 
-    return res.send(searchUsers);
+      return res.send(searchUsers);
+    } catch (err) {
+      console.error(err);
+      return next(err);
+    }
   },
 };
