@@ -93,7 +93,7 @@ module.exports = {
   get: async (req, res, next) => {
     const { limit, page } = req.query;
 
-    if (!req.headers.authorization) {
+    if (req.headers.authorization === "Bearer null") {
       try {
         const exPosts = await posts.findAndCountAll({
           limit: Number(limit),
