@@ -132,7 +132,46 @@ module.exports = {
     } else {
       try {
         const accessTokenData = isAuthorized(req);
+
+        if (!accessTokenData) {
+          try {
+            const exPosts = await posts.findAndCountAll({
+              limit: Number(limit),
+              offset: (Number(page) - 1) * limit,
+              distinct: true,
+              order: [
+                ["views", "DESC"],
+                ["createdAt", "DESC"],
+              ],
+              include: [
+                { model: images, attributes: ["url"] },
+                { model: users, attributes: ["id", "name", "profile"] },
+                {
+                  model: likes,
+                  where: { comment_id: null },
+                  required: false,
+                },
+                {
+                  model: comments,
+                  attributes: ["id", "content"],
+                  include: [
+                    { model: users, attributes: ["id", "name", "profile"] },
+                    {
+                      model: likes,
+                      attributes: ["id", "post_id", "comment_id", "user_id"],
+                    },
+                  ],
+                },
+              ],
+            });
+            return res.status(200).send({ ...exPosts, page: Number(page) });
+          } catch (err) {
+            console.error(err);
+            return next(err);
+          }
+        }
         const { id } = accessTokenData;
+
         let followers = await follow.findAll({
           where: { user_id: id },
           raw: true,
