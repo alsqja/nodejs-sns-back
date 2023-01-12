@@ -6,6 +6,8 @@ const {
   generateRefreshToken,
   sendRefreshToken,
   sendAccessToken,
+  resendAccessToken,
+  checkRefeshToken,
 } = require("../utils/tokenFunctions");
 
 module.exports = {
@@ -62,8 +64,14 @@ module.exports = {
               profile: user.profile,
             });
 
-            sendRefreshToken(res, refreshToken);
-            sendAccessToken(res, accessToken);
+            // sendRefreshToken(res, refreshToken);
+            // sendAccessToken(res, accessToken);
+            res
+              .cookie("refreshToken", refreshToken, {
+                httpOnly: true,
+              })
+              .status(201)
+              .json({ accessToken: accessToken });
           });
         }
       )(req, res, next);
@@ -73,6 +81,47 @@ module.exports = {
     get: (req, res) => {
       // req.logout();
       res.status(200).send("로그아웃 되었습니다.");
+    },
+  },
+  refresh: {
+    get: (req, res) => {
+      const refreshToken = req.cookies.refreshToken;
+
+      if (!refreshToken) {
+        // return res.status(403).send("refresh token does not exist, you've never logged in before");
+        return res.json({ data: null, message: "refresh token not provided" });
+      }
+
+      const refreshTokenData = checkRefeshToken(refreshToken);
+      if (!refreshTokenData) {
+        return res.json({
+          data: null,
+          message: "invalid refresh token, please log in again",
+        });
+      }
+
+      const { id } = refreshTokenData;
+      users
+        .findOne({ where: { id } })
+        .then((data) => {
+          if (!data) {
+            return res.json({
+              data: null,
+              message: "refresh token has been tempered",
+            });
+          }
+          delete data.dataValues.password;
+
+          const newAccessToken = generateAccessToken(data.dataValues);
+          res.json({
+            accessToken: newAccessToken,
+            userInfo: data,
+            message: "ok",
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
 };
