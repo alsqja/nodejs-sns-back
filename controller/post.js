@@ -259,11 +259,11 @@ module.exports = {
               ["views", "DESC"],
               ["createdAt", "DESC"],
             ],
-            // where: {
-            //   user_id: {
-            //     [Op.not]: followers,
-            //   },
-            // },
+            where: {
+              user_id: {
+                [Op.not]: [...followers, id],
+              },
+            },
             include: [
               { model: images, attributes: ["url"] },
               { model: users, attributes: ["id", "name", "profile"] },
