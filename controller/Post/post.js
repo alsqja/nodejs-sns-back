@@ -1,6 +1,14 @@
 const { Op } = require("sequelize");
-const { posts, images, users, comments, likes, follow } = require("../models");
-const { isAuthorized } = require("../utils/tokenFunctions");
+const {
+  posts,
+  images,
+  users,
+  comments,
+  likes,
+  follow,
+} = require("../../models");
+const { isAuthorized } = require("../../utils/tokenFunctions");
+const { getPosts } = require("./postFunctions");
 
 module.exports = {
   post: async (req, res, next) => {
@@ -95,35 +103,7 @@ module.exports = {
 
     if (req.headers.authorization === "Bearer null") {
       try {
-        const exPosts = await posts.findAndCountAll({
-          limit: Number(limit),
-          offset: (Number(page) - 1) * limit,
-          distinct: true,
-          order: [
-            ["views", "DESC"],
-            ["createdAt", "DESC"],
-          ],
-          include: [
-            { model: images, attributes: ["url"] },
-            { model: users, attributes: ["id", "name", "profile"] },
-            {
-              model: likes,
-              where: { comment_id: null },
-              required: false,
-            },
-            {
-              model: comments,
-              attributes: ["id", "content"],
-              include: [
-                { model: users, attributes: ["id", "name", "profile"] },
-                {
-                  model: likes,
-                  attributes: ["id", "post_id", "comment_id", "user_id"],
-                },
-              ],
-            },
-          ],
-        });
+        const exPosts = await getPosts(limit, page);
         return res.status(200).send({ ...exPosts, page: Number(page) });
       } catch (err) {
         console.error(err);
@@ -135,35 +115,7 @@ module.exports = {
 
         if (!accessTokenData) {
           try {
-            const exPosts = await posts.findAndCountAll({
-              limit: Number(limit),
-              offset: (Number(page) - 1) * limit,
-              distinct: true,
-              order: [
-                ["views", "DESC"],
-                ["createdAt", "DESC"],
-              ],
-              include: [
-                { model: images, attributes: ["url"] },
-                { model: users, attributes: ["id", "name", "profile"] },
-                {
-                  model: likes,
-                  where: { comment_id: null },
-                  required: false,
-                },
-                {
-                  model: comments,
-                  attributes: ["id", "content"],
-                  include: [
-                    { model: users, attributes: ["id", "name", "profile"] },
-                    {
-                      model: likes,
-                      attributes: ["id", "post_id", "comment_id", "user_id"],
-                    },
-                  ],
-                },
-              ],
-            });
+            const exPosts = await getPosts(limit, page);
             return res.status(200).send({ ...exPosts, page: Number(page) });
           } catch (err) {
             console.error(err);
@@ -188,6 +140,11 @@ module.exports = {
                 ["views", "DESC"],
                 ["createdAt", "DESC"],
               ],
+              where: {
+                user_id: {
+                  [Op.not]: [id],
+                },
+              },
               include: [
                 { model: images, attributes: ["url"] },
                 { model: users, attributes: ["id", "name", "profile"] },
