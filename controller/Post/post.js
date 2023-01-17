@@ -130,125 +130,13 @@ module.exports = {
         });
         followers = followers.map((el) => el.following_id);
 
-        if (followers.length === 0) {
-          try {
-            const exPosts = await posts.findAndCountAll({
-              limit: Number(limit),
-              offset: (Number(page) - 1) * limit,
-              distinct: true,
-              order: [
-                ["views", "DESC"],
-                ["createdAt", "DESC"],
-              ],
-              where: {
-                user_id: {
-                  [Op.not]: [id],
-                },
-              },
-              include: [
-                { model: images, attributes: ["url"] },
-                { model: users, attributes: ["id", "name", "profile"] },
-                {
-                  model: likes,
-                  where: { comment_id: null },
-                  required: false,
-                },
-                {
-                  model: comments,
-                  attributes: ["id", "content"],
-                  include: [
-                    { model: users, attributes: ["id", "name", "profile"] },
-                    {
-                      model: likes,
-                      attributes: ["id", "post_id", "comment_id", "user_id"],
-                    },
-                  ],
-                },
-              ],
-            });
-            return res.status(200).send({ ...exPosts, page: Number(page) });
-          } catch (err) {
-            console.error(err);
-            return next(err);
-          }
+        try {
+          const exPosts = await getPosts(limit, page, id, followers);
+          return res.status(200).send({ ...exPosts, page: Number(page) });
+        } catch (err) {
+          console.error(err);
+          return next(err);
         }
-
-        const followerPosts = await posts.findAndCountAll({
-          where: {
-            user_id: {
-              [Op.or]: followers,
-            },
-          },
-          limit: Number(limit),
-          offset: (Number(page) - 1) * limit,
-          distinct: true,
-          order: [
-            ["views", "DESC"],
-            ["createdAt", "DESC"],
-          ],
-          include: [
-            { model: images, attributes: ["url"] },
-            { model: users, attributes: ["id", "name", "profile"] },
-            {
-              model: likes,
-              where: { comment_id: null },
-              required: false,
-            },
-            {
-              model: comments,
-              attributes: ["id", "content"],
-              include: [
-                { model: users, attributes: ["id", "name", "profile"] },
-                {
-                  model: likes,
-                  attributes: ["id", "post_id", "comment_id", "user_id"],
-                },
-              ],
-            },
-          ],
-        });
-        if (followerPosts.count < Number(limit)) {
-          const exPosts = await posts.findAndCountAll({
-            limit: Number(limit) - followerPosts.count,
-            offset: (Number(page) - 1) * limit,
-            distinct: true,
-            order: [
-              ["views", "DESC"],
-              ["createdAt", "DESC"],
-            ],
-            where: {
-              user_id: {
-                [Op.not]: [...followers, id],
-              },
-            },
-            include: [
-              { model: images, attributes: ["url"] },
-              { model: users, attributes: ["id", "name", "profile"] },
-              {
-                model: likes,
-                where: { comment_id: null },
-                required: false,
-              },
-              {
-                model: comments,
-                attributes: ["id", "content"],
-                include: [
-                  { model: users, attributes: ["id", "name", "profile"] },
-                  {
-                    model: likes,
-                    attributes: ["id", "post_id", "comment_id", "user_id"],
-                  },
-                ],
-              },
-            ],
-          });
-          return res.send({
-            rows: [...followerPosts.rows, ...exPosts.rows],
-            count: followerPosts.count + exPosts.count,
-            page: Number(page),
-          });
-        }
-        return res.send({ ...followerPosts, page: Number(page) });
       } catch (err) {
         console.error(err);
         return next(err);
