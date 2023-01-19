@@ -47,6 +47,7 @@ module.exports = {
           ["views", "DESC"],
           ["createdAt", "DESC"],
         ],
+        where: { user_id: id },
         include: [
           { model: images, attributes: ["url"] },
           {
