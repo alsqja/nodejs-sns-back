@@ -1,6 +1,6 @@
 # nodejs-sns-back
 
-주제 : Nodejs 와 Sequelize 를 이용한 SNS 서비스
+주제 : Nodejs 와 Sequelize 를 이용한 SNS 서비스 입니다.
 
 ## 배포 링크
 
