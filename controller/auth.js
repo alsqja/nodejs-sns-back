@@ -63,9 +63,6 @@ module.exports = {
               name: user.name,
               profile: user.profile,
             });
-
-            // sendRefreshToken(res, refreshToken);
-            // sendAccessToken(res, accessToken);
             res
               .cookie("refreshToken", refreshToken, {
                 httpOnly: true,
