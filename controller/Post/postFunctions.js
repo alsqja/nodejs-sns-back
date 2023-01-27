@@ -1,12 +1,5 @@
 const { Op } = require("sequelize");
-const {
-  posts,
-  images,
-  users,
-  comments,
-  likes,
-  follow,
-} = require("../../models");
+const { posts, images, users, comments, likes } = require("../../models");
 
 module.exports = {
   getPosts: async (limit, page, id, followers) => {

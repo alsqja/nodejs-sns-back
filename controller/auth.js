@@ -4,9 +4,6 @@ const bcrypt = require("bcrypt");
 const {
   generateAccessToken,
   generateRefreshToken,
-  sendRefreshToken,
-  sendAccessToken,
-  resendAccessToken,
   checkRefeshToken,
 } = require("../utils/tokenFunctions");
 
