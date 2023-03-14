@@ -71,12 +71,15 @@ module.exports = {
       )(req, res, next);
     },
   },
-  logout: {
-    get: (req, res) => {
-      // req.logout();
-      res.status(200).send("로그아웃 되었습니다.");
-    },
-  },
+  // logout: {
+  //   get: (req, res) => {
+  //     req.logout((err) => {
+  //       req.session.destroy();
+
+  //     });
+  //     res.status(200).send("로그아웃 되었습니다.");
+  //   },
+  // },
   refresh: {
     get: (req, res) => {
       const refreshToken = req.cookies.refreshToken;
